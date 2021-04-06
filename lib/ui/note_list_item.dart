@@ -19,7 +19,7 @@ class NoteListItem extends StatelessWidget {
       onTap: () => Navigator.pushNamed(
         context,
         AppRouter.noteRoute,
-        arguments: NotePageArguments(note.id, note.title),
+        arguments: NotePageArguments(note.id),
       ),
     );
   }

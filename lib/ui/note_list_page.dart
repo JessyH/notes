@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../res/app_strings.dart';
 import 'note_list_item.dart';
 import 'provider/note_list_provider.dart';
-import '../res/app_strings.dart';
+import 'shared/failure_widget.dart';
+import 'shared/state_aware_widget.dart';
 
 class NoteListPage extends StatefulWidget {
   @override
@@ -36,7 +38,11 @@ class _NoteListPageState extends State<NoteListPage> {
         ],
       ),
       drawer: Drawer(),
-      body: _listView(),
+      body: StateAwareWidget(
+        state: _noteListProvider.state,
+        successWidget: _listView,
+        failureWidget: _failureWidget,
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.edit),
         onPressed: () => {},
@@ -53,4 +59,6 @@ class _NoteListPageState extends State<NoteListPage> {
       ),
     );
   }
+
+  Widget _failureWidget() => FailureWidget(failureReason: 'Oops!');
 }

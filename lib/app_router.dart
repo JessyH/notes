@@ -29,7 +29,7 @@ class AppRouter {
             create: (context) => NoteProvider(
               noteRepository: context.read<NoteRepository>(),
             ),
-            child: NotePage(id: args.id, title: args.title),
+            child: NotePage(id: args.id),
           ),
         );
     }
