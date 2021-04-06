@@ -7,6 +7,19 @@ class Note {
   int characters = 0;
   bool pinned = false;
 
+  String get ellapsedTime {
+    final Duration difference = DateTime.now().difference(this.modificationDate);
+    if (difference.inMinutes < 60) {
+      return "${difference.inMinutes}m";
+    } else if (difference.inHours < 24) {
+      return "${difference.inHours}h";
+    } else if (difference.inDays < 365) {
+      return "${difference.inDays}d";
+    } else {
+      return "${difference.inDays~/365}y";
+    }
+  }
+
   Note({
     required this.id,
     required this.title,
