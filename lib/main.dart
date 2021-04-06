@@ -1,10 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import 'app_router.dart';
 import 'data/note_repository_impl.dart';
 import 'repository/note_repository.dart';
-import 'ui/provider/note_list_provider.dart';
-import 'ui/note_list_page.dart';
 
 void main() {
   runApp(MyApp());
@@ -22,12 +21,8 @@ class MyApp extends StatelessWidget {
         theme: ThemeData(
           primarySwatch: Colors.blue,
         ),
-        home: ChangeNotifierProvider<NoteListProvider>(
-          create: (context) => NoteListProvider(
-            noteRepository: context.read<NoteRepository>(),
-          ),
-          child: NoteListPage(),
-        ),
+        onGenerateRoute: (settings) => AppRouter.onGenerateRoute(settings),
+        initialRoute: AppRouter.homeRoute,
       ),
     );
   }

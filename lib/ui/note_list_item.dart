@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 
+import 'note_page.dart';
 import '../model/note.dart';
+import '../app_router.dart';
 
 class NoteListItem extends StatelessWidget {
   final Note note;
@@ -14,6 +16,11 @@ class NoteListItem extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       title: Text(note.title),
+      onTap: () => Navigator.pushNamed(
+        context,
+        AppRouter.noteRoute,
+        arguments: NotePageArguments(note.id, note.title),
+      ),
     );
   }
 }
