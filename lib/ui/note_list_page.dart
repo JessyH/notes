@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import 'note_list_item.dart';
 import 'provider/note_list_provider.dart';
+import '../res/app_strings.dart';
 
 class NoteListPage extends StatefulWidget {
   @override
@@ -26,9 +27,20 @@ class _NoteListPageState extends State<NoteListPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text('Notes'),
+        title: Text(AppStrings.title),
+        actions: [
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () => {},
+          ),
+        ],
       ),
+      drawer: Drawer(),
       body: _listView(),
+      floatingActionButton: FloatingActionButton(
+        child: Icon(Icons.edit),
+        onPressed: () => {},
+      ),
     );
   }
 
