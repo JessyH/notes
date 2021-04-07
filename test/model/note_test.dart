@@ -9,9 +9,7 @@ void main() {
         final note = Note(
           id: 1,
           title: 'Note',
-          creationDate: DateTime.now(),
           modificationDate: DateTime.now().add(const Duration(hours: 1)),
-          pinned: true,
         );
         expect(note.ellapsedTime, '0m');
       },
@@ -22,9 +20,7 @@ void main() {
         final note = Note(
           id: 1,
           title: 'Note',
-          creationDate: DateTime.now(),
           modificationDate: DateTime.now().subtract(const Duration(minutes: 30)),
-          pinned: true,
         );
         expect(note.ellapsedTime, '30m');
       },
@@ -35,9 +31,7 @@ void main() {
         final note = Note(
           id: 1,
           title: 'Note',
-          creationDate: DateTime.now(),
           modificationDate: DateTime.now().subtract(const Duration(hours: 3)),
-          pinned: true,
         );
         expect(note.ellapsedTime, '3h');
       },
@@ -48,9 +42,7 @@ void main() {
         final note = Note(
           id: 1,
           title: 'Note',
-          creationDate: DateTime.now(),
-          modificationDate: DateTime.now().subtract(const Duration(days: 30)),
-          pinned: true,
+          modificationDate: DateTime.now().subtract(const Duration(days: 30))
         );
         expect(note.ellapsedTime, '30d');
       },
@@ -61,9 +53,7 @@ void main() {
         final note = Note(
           id: 1,
           title: 'Note',
-          creationDate: DateTime.now(),
-          modificationDate: DateTime.now().subtract(const Duration(days: 450)),
-          pinned: true,
+          modificationDate: DateTime.now().subtract(const Duration(days: 450))
         );
         expect(note.ellapsedTime, '1y');
       },

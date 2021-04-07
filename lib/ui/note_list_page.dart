@@ -44,7 +44,7 @@ class _NoteListPageState extends State<NoteListPage> {
         failureWidget: _failureWidget,
       ),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.edit),
+        child: Icon(Icons.article_outlined),
         onPressed: () => {},
       ),
     );

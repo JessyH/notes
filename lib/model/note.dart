@@ -1,14 +1,23 @@
 class Note {
   final int id;
   final String title;
+  String body;
   final DateTime creationDate;
   DateTime modificationDate;
-  int words = 0;
-  int characters = 0;
-  bool pinned = false;
+  bool pinned;
+
+  Note({
+    required this.id,
+    required this.title,
+    this.body = '',
+    DateTime? creationDate,
+    DateTime? modificationDate,
+    this.pinned = false,
+  })  : this.creationDate = creationDate ?? DateTime.now(),
+        this.modificationDate = modificationDate ?? DateTime.now();
 
   String get ellapsedTime {
-    final difference = DateTime.now().difference(this.modificationDate);
+    final difference = DateTime.now().difference(modificationDate);
     if (difference.isNegative) {
       return "0m";
     } else if (difference.inMinutes < 60) {
@@ -22,11 +31,7 @@ class Note {
     }
   }
 
-  Note({
-    required this.id,
-    required this.title,
-    required this.creationDate,
-    required this.modificationDate,
-    required this.pinned,
-  });
+  int get words => RegExp(r"(\w+)").allMatches(body).length;
+
+  int get characters => body.length;
 }
