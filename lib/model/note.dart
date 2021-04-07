@@ -8,15 +8,17 @@ class Note {
   bool pinned = false;
 
   String get ellapsedTime {
-    final Duration difference = DateTime.now().difference(this.modificationDate);
-    if (difference.inMinutes < 60) {
+    final difference = DateTime.now().difference(this.modificationDate);
+    if (difference.isNegative) {
+      return "0m";
+    } else if (difference.inMinutes < 60) {
       return "${difference.inMinutes}m";
     } else if (difference.inHours < 24) {
       return "${difference.inHours}h";
     } else if (difference.inDays < 365) {
       return "${difference.inDays}d";
     } else {
-      return "${difference.inDays~/365}y";
+      return "${difference.inDays ~/ 365}y";
     }
   }
 
