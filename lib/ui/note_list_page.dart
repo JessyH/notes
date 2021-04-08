@@ -29,7 +29,7 @@ class _NoteListPageState extends State<NoteListPage> {
 
     return Scaffold(
       appBar: AppBar(
-        title: Text(AppStrings.title),
+        title: Text(AppStrings.appTitle),
         actions: [
           IconButton(
             icon: Icon(Icons.search),

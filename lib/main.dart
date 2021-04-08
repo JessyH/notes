@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
         Provider<NoteRepository>(create: (_) => NoteRepositoryImpl()),
       ],
       child: MaterialApp(
-        title: AppStrings.title,
+        title: AppStrings.appTitle,
         theme: _lightTheme(),
         onGenerateRoute: (settings) => AppRouter.onGenerateRoute(settings),
         initialRoute: AppRouter.homeRoute,

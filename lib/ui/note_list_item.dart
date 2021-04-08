@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 import 'note_page.dart';
+import 'modal_bottom_sheet.dart';
+import 'provider/note_provider.dart';
 import '../app_router.dart';
-import '../extensions/datetime_ext.dart';
 import '../model/note.dart';
+import '../repository/note_repository.dart';
 import '../res/app_colors.dart';
 
 class NoteListItem extends StatelessWidget {
@@ -106,97 +109,17 @@ class NoteListItem extends StatelessWidget {
 
   void _showModalBottomSheet(BuildContext context) {
     showModalBottomSheet(
+      isScrollControlled: true,
       context: context,
-      builder: (_) => Container(
-        child: Column(
-          children: [
-            Row(
-              children: [
-                Expanded(
-                  flex: 3,
-                  child: Column(
-                    children: [Icon(Icons.article_outlined)],
-                  ),
-                ),
-                Expanded(
-                  flex: 7,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        note.title,
-                        style: Theme.of(context).primaryTextTheme.subtitle1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                      Text(note.creationDate.displayFormat()),
-                      Text(
-                        'created',
-                        style: Theme.of(context).primaryTextTheme.bodyText2,
-                      ),
-                      Text(note.modificationDate.displayFormat()),
-                      Text(
-                        'last modified',
-                        style: Theme.of(context).primaryTextTheme.bodyText2,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
+      builder: (_) => Wrap(
+        children: [
+          ChangeNotifierProvider<NoteProvider>(
+            create: (context) => NoteProvider(
+              noteRepository: context.read<NoteRepository>(),
             ),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text('${note.words}'),
-                      Text(
-                        'words',
-                        style: Theme.of(context).primaryTextTheme.bodyText2,
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                  child: Column(
-                    children: [
-                      Text('${note.characters}'),
-                      Text(
-                        'characters',
-                        style: Theme.of(context).primaryTextTheme.bodyText2,
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: InkWell(
-                    child: Column(
-                      children: [
-                        Icon(Icons.push_pin_outlined),
-                        Text('pin'),
-                      ],
-                    ),
-                    onTap: () => {},
-                  ),
-                ),
-                Expanded(
-                  child: InkWell(
-                    child: Column(
-                      children: [
-                        Icon(Icons.delete_outlined),
-                        Text('delete'),
-                      ],
-                    ),
-                    onTap: () => {},
-                  ),
-                )
-              ],
-            ),
-          ],
-        ),
+            child: ModalBottomSheet(id: note.id),
+          )
+        ],
       ),
     );
   }
