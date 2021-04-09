@@ -3,6 +3,7 @@ import 'package:provider/provider.dart';
 
 import '../res/app_strings.dart';
 import 'note_list_item.dart';
+import 'provider/note_provider.dart';
 import 'provider/note_list_provider.dart';
 import 'shared/failure_widget.dart';
 import 'shared/state_aware_widget.dart';
@@ -52,10 +53,11 @@ class _NoteListPageState extends State<NoteListPage> {
 
   Widget _listView() {
     return ListView.builder(
-      itemCount: _noteListProvider.notes.length,
-      itemBuilder: (context, int index) => NoteListItem(
-        key: ObjectKey(index),
-        note: _noteListProvider.notes[index],
+      itemCount: _noteListProvider.noteProviders.length,
+      itemBuilder: (context, int index) =>
+          ChangeNotifierProvider<NoteProvider>.value(
+        value: _noteListProvider.noteProviders[index],
+        child: NoteListItem(key: ObjectKey(index)),
       ),
     );
   }

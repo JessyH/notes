@@ -1,20 +1,21 @@
 import 'base_provider.dart';
-import '../../model/note.dart';
+import 'note_provider.dart';
 import '../../repository/note_repository.dart';
 
 class NoteListProvider extends BaseProvider {
-  final List<Note> _notes = [];
+  final List<NoteProvider> noteProviders = [];
   final NoteRepository noteRepository;
 
   NoteListProvider({required this.noteRepository});
 
-  List<Note> get notes => _notes;
-
   void fetchNotes() async {
     try {
       setState(ProviderState.Loading);
-      _notes.clear();
-      _notes.addAll(await noteRepository.getNotes());
+      noteProviders.clear();
+      final notes = await noteRepository.getNotes();
+      noteProviders.addAll(notes.map(
+        (note) => NoteProvider(noteRepository: noteRepository, note: note),
+      ));
       setState(ProviderState.Success);
     } catch (exception) {
       print(exception);

@@ -23,13 +23,10 @@ class AppRouter {
           ),
         );
       case noteRoute:
-        final NotePageArguments args = settings.arguments as NotePageArguments;
         return MaterialPageRoute(
-          builder: (_) => ChangeNotifierProvider<NoteProvider>(
-            create: (context) => NoteProvider(
-              noteRepository: context.read<NoteRepository>(),
-            ),
-            child: NotePage(id: args.id),
+          builder: (context) => ChangeNotifierProvider<NoteProvider>.value(
+            value: context.read<NoteProvider>(),
+            child: NotePage(),
           ),
         );
     }

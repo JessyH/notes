@@ -6,26 +6,27 @@ class StateAwareWidget extends StatelessWidget {
   final ProviderState state;
   final Function successWidget;
   final Function failureWidget;
-  final Widget? defaultWidget;
+  final Widget? progressIndicatorWidget;
 
   StateAwareWidget({
     required this.state,
     required this.successWidget,
     required this.failureWidget,
-    this.defaultWidget,
+    this.progressIndicatorWidget,
   });
 
   @override
   Widget build(BuildContext context) {
     switch (state) {
+      case ProviderState.Default:
       case ProviderState.Success:
         return successWidget();
       case ProviderState.Failure:
         return failureWidget();
-      default:
-        return defaultWidget == null
+      case ProviderState.Loading:
+        return progressIndicatorWidget == null
             ? CircularProgressIndicator()
-            : (defaultWidget as Widget);
+            : (progressIndicatorWidget as Widget);
     }
   }
 }

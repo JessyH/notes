@@ -3,17 +3,37 @@ import '../../model/note.dart';
 import '../../repository/note_repository.dart';
 
 class NoteProvider extends BaseProvider {
-  late final Note _note;
+  final Note note;
   final NoteRepository noteRepository;
 
-  NoteProvider({required this.noteRepository});
+  NoteProvider({
+    required this.noteRepository,
+    required this.note,
+  });
 
-  Note get note => _note;
+  void pinNote() {
+    note.pinned = !note.pinned;
+    note.modificationDate = DateTime.now();
+    _updateNote(note);
+  }
 
-  void fetchNote(int id) async {
+  void deleteNote() {
+    _deleteNote(note.id);
+  }
+
+  void _updateNote(Note note) async {
     try {
-      setState(ProviderState.Loading);
-      _note = await noteRepository.getNote(id);
+      await noteRepository.updateNote(note);
+      setState(ProviderState.Success);
+    } catch (exception) {
+      print(exception);
+      setState(ProviderState.Failure);
+    }
+  }
+
+  void _deleteNote(int id) async {
+    try {
+      await noteRepository.deleteNote(id);
       setState(ProviderState.Success);
     } catch (exception) {
       print(exception);

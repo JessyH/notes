@@ -4,26 +4,16 @@ import 'package:provider/provider.dart';
 import 'provider/note_provider.dart';
 import 'shared/failure_widget.dart';
 import 'shared/state_aware_widget.dart';
+import '../model/note.dart';
 
 class NotePage extends StatefulWidget {
-  final int id;
-
-  NotePage({required this.id});
-
   @override
   _NotePageState createState() => _NotePageState();
 }
 
 class _NotePageState extends State<NotePage> {
+  late Note _note;
   late NoteProvider _noteProvider;
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      context.read<NoteProvider>()..fetchNote(widget.id);
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -40,15 +30,12 @@ class _NotePageState extends State<NotePage> {
   }
 
   Widget _noteBody() {
+    _note = _noteProvider.note;
+
     return Center(
-      child: Text(_noteProvider.note.title),
+      child: Text(_note.title),
     );
   }
 
   Widget _failureWidget() => FailureWidget(failureReason: 'Oops!');
-}
-
-class NotePageArguments {
-  final int id;
-  NotePageArguments(this.id);
 }

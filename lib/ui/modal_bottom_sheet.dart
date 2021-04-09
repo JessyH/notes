@@ -10,10 +10,6 @@ import '../res/app_colors.dart';
 import '../res/app_strings.dart';
 
 class ModalBottomSheet extends StatefulWidget {
-  final int id;
-
-  ModalBottomSheet({required this.id});
-
   @override
   _ModalBottomSheetState createState() => _ModalBottomSheetState();
 }
@@ -23,16 +19,9 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
   late NoteProvider _noteProvider;
 
   @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      context.read<NoteProvider>()..fetchNote(widget.id);
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     _noteProvider = context.watch<NoteProvider>();
+    _note = _noteProvider.note;
 
     return StateAwareWidget(
       state: _noteProvider.state,
@@ -42,8 +31,6 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
   }
 
   Widget _containerBody() {
-    _note = _noteProvider.note;
-
     return Container(
       child: Column(
         children: [
@@ -66,19 +53,19 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
               children: [
                 _expandedIconButton(
                   iconData: Icons.push_pin_outlined,
-                  iconColor: _note.pinned
-                      ? AppColors.primary
-                      : AppColors.primaryText,
-                  label: _note.pinned
-                      ? AppStrings.pinned
-                      : AppStrings.pin,
-                  onTap: () => _pinNote(),
+                  iconColor:
+                      _note.pinned ? AppColors.primary : AppColors.primaryText,
+                  label: _note.pinned ? AppStrings.pinned : AppStrings.pin,
+                  onTap: () => _noteProvider.pinNote(),
                 ),
                 _expandedIconButton(
                   iconData: Icons.delete_outlined,
                   iconColor: AppColors.delete,
                   label: AppStrings.delete,
-                  onTap: () => _deleteNote(),
+                  onTap: () => {
+                    _noteProvider.deleteNote(),
+                    Navigator.pop(context),
+                  },
                 ),
               ],
             ),
@@ -110,10 +97,6 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
       ),
     );
   }
-
-  void _pinNote() {}
-
-  void _deleteNote() {}
 
   Widget _failureWidget() => FailureWidget(failureReason: 'Oops!');
 
