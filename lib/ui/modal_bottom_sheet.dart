@@ -5,6 +5,7 @@ import 'provider/note_provider.dart';
 import 'shared/failure_widget.dart';
 import 'shared/state_aware_widget.dart';
 import '../extensions/datetime_ext.dart';
+import '../model/note.dart';
 import '../res/app_colors.dart';
 import '../res/app_strings.dart';
 
@@ -18,6 +19,7 @@ class ModalBottomSheet extends StatefulWidget {
 }
 
 class _ModalBottomSheetState extends State<ModalBottomSheet> {
+  late Note _note;
   late NoteProvider _noteProvider;
 
   @override
@@ -40,38 +42,20 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
   }
 
   Widget _containerBody() {
+    _note = _noteProvider.note;
+
     return Container(
       child: Column(
         children: [
           Container(
-            padding: EdgeInsets.symmetric(vertical: 14, horizontal: 5),
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 18),
             decoration: _borderBottom(),
             child: Row(
               children: [
-                Expanded(
-                  flex: 2,
-                  child: Column(
-                    children: [
-                      Icon(
-                        Icons.article_outlined,
-                        size: 28,
-                        color: AppColors.secondaryText,
-                      )
-                    ],
-                  ),
-                ),
-                Expanded(
-                  flex: 8,
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: [
-                      Text(
-                        _noteProvider.note.title,
-                        style: Theme.of(context).primaryTextTheme.subtitle1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ],
-                  ),
+                Text(
+                  _note.title,
+                  style: Theme.of(context).primaryTextTheme.headline6,
+                  overflow: TextOverflow.ellipsis,
                 ),
               ],
             ),
@@ -82,46 +66,54 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
               children: [
                 _expandedIconButton(
                   iconData: Icons.push_pin_outlined,
-                  iconColor: _noteProvider.note.pinned
+                  iconColor: _note.pinned
                       ? AppColors.primary
                       : AppColors.primaryText,
-                  label: _noteProvider.note.pinned
+                  label: _note.pinned
                       ? AppStrings.pinned
                       : AppStrings.pin,
-                  onTap: () => {},
+                  onTap: () => _pinNote(),
                 ),
                 _expandedIconButton(
                   iconData: Icons.delete_outlined,
+                  iconColor: AppColors.delete,
                   label: AppStrings.delete,
-                  onTap: () => {},
+                  onTap: () => _deleteNote(),
                 ),
               ],
             ),
           ),
-          Column(
-            children: [
-              _rowLabelValue(
-                label: AppStrings.words,
-                value: _noteProvider.note.words.toString(),
-              ),
-              _rowLabelValue(
-                label: AppStrings.characters,
-                value: _noteProvider.note.characters.toString(),
-              ),
-              _rowLabelValue(
-                label: AppStrings.created,
-                value: _noteProvider.note.creationDate.formatMDYatHM(),
-              ),
-              _rowLabelValue(
-                label: AppStrings.lastModified,
-                value: _noteProvider.note.modificationDate.formatMDYatHM(),
-              ),
-            ],
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 30, vertical: 10),
+            child: Column(
+              children: [
+                _rowLabelValue(
+                  label: AppStrings.words,
+                  value: _note.words.toString(),
+                ),
+                _rowLabelValue(
+                  label: AppStrings.characters,
+                  value: _note.characters.toString(),
+                ),
+                _rowLabelValue(
+                  label: AppStrings.created,
+                  value: _note.creationDate.formatMDYatHM(),
+                ),
+                _rowLabelValue(
+                  label: AppStrings.lastModified,
+                  value: _note.modificationDate.formatMDYatHM(),
+                ),
+              ],
+            ),
           ),
         ],
       ),
     );
   }
+
+  void _pinNote() {}
+
+  void _deleteNote() {}
 
   Widget _failureWidget() => FailureWidget(failureReason: 'Oops!');
 
@@ -140,11 +132,12 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
             Icon(
               iconData,
               color: iconColor,
+              size: 24,
             ),
             SizedBox(height: 5),
             Text(
               label.toUpperCase(),
-              style: Theme.of(context).primaryTextTheme.bodyText2,
+              style: TextStyle(color: AppColors.primaryText, fontSize: 12),
             ),
             SizedBox(height: 15),
           ],
@@ -158,18 +151,21 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
     required String label,
     required String value,
   }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        Text(
-          label,
-          style: Theme.of(context).primaryTextTheme.bodyText1,
-        ),
-        Text(
-          value,
-          style: Theme.of(context).primaryTextTheme.bodyText2,
-        ),
-      ],
+    return Padding(
+      padding: EdgeInsets.symmetric(vertical: 8),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(
+            label,
+            style: Theme.of(context).primaryTextTheme.bodyText2,
+          ),
+          Text(
+            value,
+            style: Theme.of(context).primaryTextTheme.bodyText1,
+          ),
+        ],
+      ),
     );
   }
 

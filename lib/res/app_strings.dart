@@ -1,10 +1,10 @@
 class AppStrings {
   static const String appTitle = 'notes';
-  static const String delete = 'delete';
-  static const String pin = 'pin';
-  static const String pinned = 'pinned';
-  static const String characters = 'characters';
-  static const String words = 'words';
-  static const String created = 'created';
-  static const String lastModified = 'last modified';
+  static const String delete = 'Delete';
+  static const String pin = 'Pin';
+  static const String pinned = 'Pinned';
+  static const String characters = 'Characters';
+  static const String words = 'Words';
+  static const String created = 'Created';
+  static const String lastModified = 'Last modified';
 }

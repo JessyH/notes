@@ -23,12 +23,24 @@ class NoteRepositoryImpl extends NoteRepository {
   ];
 
   @override
+  Future<List<Note>> getNotes() async {
+    return notes;
+  }
+
+  @override
   Future<Note> getNote(int id) async {
     return notes.firstWhere((note) => note.id == id);
   }
 
   @override
-  Future<List<Note>> getNotes() async {
-    return notes;
+  Future<Note> updateNote(Note newNote) async {
+    var index = notes.indexWhere((note) => note.id == newNote.id);
+    notes[index] = newNote;
+    return notes[index];
+  }
+
+  @override
+  Future<void> deleteNote(int id) async {
+    notes.removeWhere((note) => note.id == id);
   }
 }

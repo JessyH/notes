@@ -7,7 +7,7 @@ class AppColors {
   static const Color primaryText = _black;
   static const Color secondaryText = _lightBlack;
   static const Color border = Color.fromRGBO(43, 41, 44, 0.1);
-  static const Color delete = Color.fromRGBO(239, 83, 80, 1);
+  static const Color delete = Color.fromRGBO(239, 83, 80, 0.8);
 
   // PALETTE
   static const Color _yellow = Color.fromRGBO(253, 201, 33, 1);
