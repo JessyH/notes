@@ -10,6 +10,10 @@ import '../res/app_colors.dart';
 import '../res/app_strings.dart';
 
 class ModalBottomSheet extends StatefulWidget {
+  final int id;
+
+  ModalBottomSheet({required this.id});
+
   @override
   _ModalBottomSheetState createState() => _ModalBottomSheetState();
 }
@@ -21,7 +25,7 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
   @override
   Widget build(BuildContext context) {
     _noteProvider = context.watch<NoteProvider>();
-    _note = _noteProvider.note;
+    _note = _noteProvider.getNote(widget.id);
 
     return StateAwareWidget(
       state: _noteProvider.state,
@@ -56,14 +60,14 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
                   iconColor:
                       _note.pinned ? AppColors.primary : AppColors.primaryText,
                   label: _note.pinned ? AppStrings.pinned : AppStrings.pin,
-                  onTap: () => _noteProvider.pinNote(),
+                  onTap: () => _noteProvider.pinNote(_note),
                 ),
                 _expandedIconButton(
                   iconData: Icons.delete_outlined,
                   iconColor: AppColors.delete,
                   label: AppStrings.delete,
                   onTap: () => {
-                    _noteProvider.deleteNote(),
+                    _noteProvider.deleteNote(_note),
                     Navigator.pop(context),
                   },
                 ),

@@ -6,6 +6,7 @@ import 'data/note_repository_impl.dart';
 import 'repository/note_repository.dart';
 import 'res/app_colors.dart';
 import 'res/app_strings.dart';
+import 'ui/provider/note_provider.dart';
 
 void main() {
   runApp(MyApp());
@@ -17,6 +18,11 @@ class MyApp extends StatelessWidget {
     return MultiProvider(
       providers: [
         Provider<NoteRepository>(create: (_) => NoteRepositoryImpl()),
+        ChangeNotifierProvider<NoteProvider>(
+          create: (context) => NoteProvider(
+            noteRepository: context.read<NoteRepository>(),
+          ),
+        ),
       ],
       child: MaterialApp(
         title: AppStrings.appTitle,

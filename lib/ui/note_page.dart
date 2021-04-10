@@ -7,6 +7,10 @@ import 'shared/state_aware_widget.dart';
 import '../model/note.dart';
 
 class NotePage extends StatefulWidget {
+  final int id;
+
+  NotePage({required this.id});
+
   @override
   _NotePageState createState() => _NotePageState();
 }
@@ -18,6 +22,7 @@ class _NotePageState extends State<NotePage> {
   @override
   Widget build(BuildContext context) {
     _noteProvider = context.watch<NoteProvider>();
+    _note = _noteProvider.getNote(widget.id);
 
     return Scaffold(
       appBar: AppBar(),
@@ -30,12 +35,15 @@ class _NotePageState extends State<NotePage> {
   }
 
   Widget _noteBody() {
-    _note = _noteProvider.note;
-
     return Center(
       child: Text(_note.title),
     );
   }
 
   Widget _failureWidget() => FailureWidget(failureReason: 'Oops!');
+}
+
+class NotePageArguments {
+  final int id;
+  NotePageArguments({required this.id});
 }

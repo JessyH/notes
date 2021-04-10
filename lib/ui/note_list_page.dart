@@ -4,7 +4,6 @@ import 'package:provider/provider.dart';
 import '../res/app_strings.dart';
 import 'note_list_item.dart';
 import 'provider/note_provider.dart';
-import 'provider/note_list_provider.dart';
 import 'shared/failure_widget.dart';
 import 'shared/state_aware_widget.dart';
 
@@ -14,19 +13,19 @@ class NoteListPage extends StatefulWidget {
 }
 
 class _NoteListPageState extends State<NoteListPage> {
-  late NoteListProvider _noteListProvider;
+  late NoteProvider _noteProvider;
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance?.addPostFrameCallback((_) {
-      context.read<NoteListProvider>()..fetchNotes();
+      context.read<NoteProvider>().fetchNotes();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-    _noteListProvider = context.watch<NoteListProvider>();
+    _noteProvider = context.watch<NoteProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -40,7 +39,7 @@ class _NoteListPageState extends State<NoteListPage> {
       ),
       drawer: Drawer(),
       body: StateAwareWidget(
-        state: _noteListProvider.state,
+        state: _noteProvider.state,
         successWidget: _listView,
         failureWidget: _failureWidget,
       ),
@@ -53,11 +52,10 @@ class _NoteListPageState extends State<NoteListPage> {
 
   Widget _listView() {
     return ListView.builder(
-      itemCount: _noteListProvider.noteProviders.length,
-      itemBuilder: (context, int index) =>
-          ChangeNotifierProvider<NoteProvider>.value(
-        value: _noteListProvider.noteProviders[index],
-        child: NoteListItem(key: ObjectKey(index)),
+      itemCount: _noteProvider.notes.length,
+      itemBuilder: (context, int index) => NoteListItem(
+        key: ObjectKey(index),
+        id: _noteProvider.notes[index].id,
       ),
     );
   }

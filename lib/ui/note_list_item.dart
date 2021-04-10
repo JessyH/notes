@@ -2,16 +2,22 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import 'modal_bottom_sheet.dart';
+import 'note_page.dart';
 import 'provider/note_provider.dart';
 import '../app_router.dart';
 import '../res/app_colors.dart';
 
 class NoteListItem extends StatelessWidget {
-  NoteListItem({required Key key}) : super(key: key);
+  final int id;
+
+  NoteListItem({
+    required Key key,
+    required this.id,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    final _note = context.watch<NoteProvider>().note;
+    final _note = context.watch<NoteProvider>().getNote(id);
 
     return InkWell(
       child: Container(
@@ -93,7 +99,11 @@ class NoteListItem extends StatelessWidget {
         ),
       ),
       onLongPress: () => _showModalBottomSheet(context),
-      onTap: () => Navigator.pushNamed(context, AppRouter.noteRoute),
+      onTap: () => Navigator.pushNamed(
+        context,
+        AppRouter.noteRoute,
+        arguments: NotePageArguments(id: id),
+      ),
     );
   }
 
@@ -103,10 +113,7 @@ class NoteListItem extends StatelessWidget {
       context: context,
       builder: (_) => Wrap(
         children: [
-          ChangeNotifierProvider<NoteProvider>.value(
-            value: context.read<NoteProvider>(),
-            child: ModalBottomSheet(),
-          )
+          ModalBottomSheet(id: id),
         ],
       ),
     );
