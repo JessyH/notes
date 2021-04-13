@@ -1,3 +1,4 @@
+import '../data/db/NoteDao.dart';
 import '../model/note.dart';
 import '../repository/note_repository.dart';
 
@@ -22,8 +23,14 @@ class NoteRepositoryImpl extends NoteRepository {
     ),
   ];
 
+  final NoteDao noteDao;
+
+  NoteRepositoryImpl({required this.noteDao});
+
   @override
   Future<List<Note>> getNotes() async {
+    var t = await noteDao.getAll();
+    print(t);
     return notes;
   }
 
