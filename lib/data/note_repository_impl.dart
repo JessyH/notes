@@ -1,53 +1,36 @@
 import '../data/db/NoteDao.dart';
+import '../data/db/NoteDb.dart';
+import '../data/db/NoteDbMapper.dart';
 import '../model/note.dart';
 import '../repository/note_repository.dart';
 
 class NoteRepositoryImpl extends NoteRepository {
-  final notes = [
-    Note(
-      id: 1,
-      title: 'Note 1',
-      body:
-          'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque porttitor hendrerit nunc, a sodales eros suscipit varius. Nam condimentum vulputate tempor. Aenean mattis ligula mauris, sit amet luctus magna ornare et. Interdum et malesuada fames ac ante ipsum primis in faucibus.',
-      pinned: true,
-    ),
-    Note(
-      id: 2,
-      title: 'Note 2',
-      body: '- String1 - String2 - String3 - String4',
-    ),
-    Note(
-      id: 3,
-      title: 'Note 3',
-      body: 'Bla bla bla',
-    ),
-  ];
-
   final NoteDao noteDao;
 
   NoteRepositoryImpl({required this.noteDao});
 
   @override
   Future<List<Note>> getNotes() async {
-    var t = await noteDao.getAll();
-    print(t);
-    return notes;
+    final List<NoteDb> notesDb = await noteDao.getAll();
+    return notesDb
+        .map((noteDb) => NoteDbMapper.from(noteDb))
+        .toList(growable: false);
   }
 
   @override
   Future<Note> getNote(int id) async {
-    return notes.firstWhere((note) => note.id == id);
+    final NoteDb noteDb = await noteDao.getById(id);
+    return NoteDbMapper.from(noteDb);
   }
 
   @override
-  Future<Note> updateNote(Note newNote) async {
-    var index = notes.indexWhere((note) => note.id == newNote.id);
-    notes[index] = newNote;
-    return notes[index];
+  Future<void> updateNote(Note newNote) async {
+    final NoteDb noteDb = NoteDbMapper.to(newNote);
+    await noteDao.update(noteDb);
   }
 
   @override
   Future<void> deleteNote(int id) async {
-    notes.removeWhere((note) => note.id == id);
+    await noteDao.delete(id);
   }
 }

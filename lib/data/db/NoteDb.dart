@@ -1,7 +1,7 @@
 import '../../extensions/bool_ext.dart';
 
 class NoteDb {
-  final int id;
+  int? id;
   final String title;
   final String body;
   final DateTime creationDate;
@@ -9,7 +9,7 @@ class NoteDb {
   final bool pinned;
 
   NoteDb({
-    required this.id,
+    this.id,
     required this.title,
     required this.body,
     required this.creationDate,
@@ -19,7 +19,7 @@ class NoteDb {
 
   Map<String, dynamic> toMap() {
     return {
-      idColumn: id,
+      if (id != null) idColumn: id,
       titleColumn: title,
       bodyColumn: body,
       creationDateColumn: creationDate.millisecondsSinceEpoch,
@@ -52,12 +52,12 @@ class NoteDb {
   static String get createTableQuery {
     return '''
       CREATE TABLE ${NoteDb.tableName}(
-        ${NoteDb.idColumn} INTEGER PRIMARY KEY, 
-        ${NoteDb.titleColumn} TEXT, 
-        ${NoteDb.bodyColumn} TEXT, 
-        ${NoteDb.creationDateColumn} INTEGER,
-        ${NoteDb.modificationDateColumn} INTEGER,
-        ${NoteDb.pinnedColumn} INTEGER
+        ${NoteDb.idColumn} INTEGER PRIMARY KEY NOT NULL, 
+        ${NoteDb.titleColumn} TEXT NOT NULL, 
+        ${NoteDb.bodyColumn} TEXT NOT NULL, 
+        ${NoteDb.creationDateColumn} INTEGER NOT NULL,
+        ${NoteDb.modificationDateColumn} INTEGER NOT NULL,
+        ${NoteDb.pinnedColumn} INTEGER NOT NULL
       )
     ''';
   }

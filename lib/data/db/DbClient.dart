@@ -42,7 +42,6 @@ class DbClient {
     await db.insert(
       NoteDb.tableName,
       NoteDb(
-        id: 0,
         title: 'Note1',
         body:
             'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque porttitor hendrerit nunc, a sodales eros suscipit varius. Nam condimentum vulputate tempor. Aenean mattis ligula mauris, sit amet luctus magna ornare et. Interdum et malesuada fames ac ante ipsum primis in faucibus.',
@@ -54,7 +53,6 @@ class DbClient {
     await db.insert(
       NoteDb.tableName,
       NoteDb(
-        id: 1,
         title: 'Note2',
         body: '- String1 - String2 - String3 - String4',
         creationDate: DateTime.now(),
@@ -65,7 +63,6 @@ class DbClient {
     await db.insert(
       NoteDb.tableName,
       NoteDb(
-        id: 2,
         title: 'Note3',
         body: 'Bla bla bla',
         creationDate: DateTime.now(),
