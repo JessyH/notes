@@ -6,6 +6,8 @@ class Note {
   DateTime modificationDate;
   bool pinned;
 
+  static final int defaultId = -1;
+
   Note({
     required this.id,
     required this.title,
@@ -15,6 +17,14 @@ class Note {
     this.pinned = false,
   })  : this.creationDate = creationDate ?? DateTime.now(),
         this.modificationDate = modificationDate ?? DateTime.now();
+
+  Note.empty({
+    this.title = '',
+    this.body = '',
+    this.pinned = false,
+  })  : this.id = defaultId,
+        this.creationDate = DateTime.now(),
+        this.modificationDate = DateTime.now();
 
   String get ellapsedTime {
     final difference = DateTime.now().difference(modificationDate);

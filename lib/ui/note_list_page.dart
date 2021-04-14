@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
+import '../app_router.dart';
 import '../res/app_strings.dart';
+import 'note_page.dart';
 import 'note_list_item.dart';
 import 'provider/note_provider.dart';
 import 'shared/failure_widget.dart';
@@ -45,7 +47,11 @@ class _NoteListPageState extends State<NoteListPage> {
       ),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.article_outlined),
-        onPressed: () => {},
+        onPressed: () => Navigator.pushNamed(
+          context,
+          AppRouter.noteRoute,
+          arguments: NotePageArguments(),
+        ),
       ),
     );
   }
