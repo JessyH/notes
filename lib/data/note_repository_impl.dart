@@ -24,8 +24,14 @@ class NoteRepositoryImpl extends NoteRepository {
   }
 
   @override
-  Future<void> updateNote(Note newNote) async {
-    final NoteDb noteDb = NoteDbMapper.to(newNote);
+  Future<void> insertNote(Note note) async {
+    final NoteDb noteDb = NoteDbMapper.to(note);
+    await noteDao.insert(noteDb);
+  }
+
+  @override
+  Future<void> updateNote(Note note) async {
+    final NoteDb noteDb = NoteDbMapper.to(note);
     await noteDao.update(noteDb);
   }
 

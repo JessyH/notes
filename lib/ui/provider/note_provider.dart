@@ -30,6 +30,20 @@ class NoteProvider extends BaseProvider {
 
   void deleteNote(Note note) {
     _deleteNote(note.id);
+    fetchNotes();
+  }
+
+  void saveNote(Note note) {
+    _insertNote(note);
+    fetchNotes();
+  }
+
+  void _insertNote(Note note) async {
+    try {
+      await noteRepository.insertNote(note);
+    } catch (exception) {
+      print(exception);
+    }
   }
 
   void _updateNote(Note note) async {
