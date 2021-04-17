@@ -1,13 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
-import 'provider/note_provider.dart';
-import 'shared/failure_widget.dart';
-import 'shared/state_aware_widget.dart';
 import '../extensions/datetime_ext.dart';
-import '../model/note.dart';
 import '../res/app_colors.dart';
 import '../res/app_strings.dart';
+import 'provider/note_provider.dart';
+import 'view_model/modal_bottom_sheet_view_model.dart';
 
 class ModalBottomSheet extends StatefulWidget {
   final int id;
@@ -19,22 +17,22 @@ class ModalBottomSheet extends StatefulWidget {
 }
 
 class _ModalBottomSheetState extends State<ModalBottomSheet> {
-  late Note _note;
-  late NoteProvider _noteProvider;
-
   @override
   Widget build(BuildContext context) {
-    _noteProvider = context.watch<NoteProvider>();
-    _note = _noteProvider.getNote(widget.id);
-
-    return StateAwareWidget(
-      state: _noteProvider.state,
-      successWidget: _containerBody,
-      failureWidget: _failureWidget,
+    return ChangeNotifierProvider(
+      create: (_) => ModalBottomSheetViewModel(
+        noteProvider: context.read<NoteProvider>(),
+        id: widget.id,
+      ),
+      child: Consumer<ModalBottomSheetViewModel>(
+        builder: (context, viewModel, child) {
+          return _containerBody(viewModel);
+        },
+      ),
     );
   }
 
-  Widget _containerBody() {
+  Widget _containerBody(ModalBottomSheetViewModel viewModel) {
     return Container(
       child: Column(
         children: [
@@ -44,7 +42,7 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
             child: Row(
               children: [
                 Text(
-                  _note.title,
+                  viewModel.note.title,
                   style: Theme.of(context).primaryTextTheme.headline6,
                   overflow: TextOverflow.ellipsis,
                 ),
@@ -57,17 +55,20 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
               children: [
                 _expandedIconButton(
                   iconData: Icons.push_pin_outlined,
-                  iconColor:
-                      _note.pinned ? AppColors.primary : AppColors.primaryText,
-                  label: _note.pinned ? AppStrings.pinned : AppStrings.pin,
-                  onTap: () => _noteProvider.pinNote(_note),
+                  iconColor: viewModel.note.pinned
+                      ? AppColors.primary
+                      : AppColors.primaryText,
+                  label: viewModel.note.pinned
+                      ? AppStrings.pinned
+                      : AppStrings.pin,
+                  onTap: () => viewModel.pinNote(),
                 ),
                 _expandedIconButton(
                   iconData: Icons.delete_outlined,
                   iconColor: AppColors.delete,
                   label: AppStrings.delete,
                   onTap: () => {
-                    _noteProvider.deleteNote(_note),
+                    viewModel.deleteNote(),
                     Navigator.pop(context),
                   },
                 ),
@@ -80,19 +81,19 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
               children: [
                 _rowLabelValue(
                   label: AppStrings.words,
-                  value: _note.words.toString(),
+                  value: viewModel.note.words.toString(),
                 ),
                 _rowLabelValue(
                   label: AppStrings.characters,
-                  value: _note.characters.toString(),
+                  value: viewModel.note.characters.toString(),
                 ),
                 _rowLabelValue(
                   label: AppStrings.created,
-                  value: _note.creationDate.formatMDYatHM(),
+                  value: viewModel.note.creationDate.formatMDYatHM(),
                 ),
                 _rowLabelValue(
                   label: AppStrings.lastModified,
-                  value: _note.modificationDate.formatMDYatHM(),
+                  value: viewModel.note.modificationDate.formatMDYatHM(),
                 ),
               ],
             ),
@@ -101,8 +102,6 @@ class _ModalBottomSheetState extends State<ModalBottomSheet> {
       ),
     );
   }
-
-  Widget _failureWidget() => FailureWidget(failureReason: 'Oops!');
 
   Widget _expandedIconButton({
     required IconData iconData,
