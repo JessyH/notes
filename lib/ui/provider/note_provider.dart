@@ -1,8 +1,9 @@
-import 'base_provider.dart';
+import 'package:flutter/material.dart';
+
 import '../../model/note.dart';
 import '../../repository/note_repository.dart';
 
-class NoteProvider extends BaseProvider {
+class NoteProvider extends ChangeNotifier {
   final List<Note> notes = [];
   final NoteRepository noteRepository;
 
@@ -10,15 +11,14 @@ class NoteProvider extends BaseProvider {
 
   Note getNote(int id) => notes.firstWhere((note) => note.id == id);
 
-  void fetchNotes() async {
+  Future<List<Note>> fetchNotes() async {
     try {
-      setState(ProviderState.Loading);
       notes.clear();
       notes.addAll(await noteRepository.getNotes());
-      setState(ProviderState.Success);
+      notifyListeners();
+      return notes;
     } catch (exception) {
-      print(exception);
-      setState(ProviderState.Failure);
+      throw Exception('Could not fetch the notes');
     }
   }
 
@@ -26,6 +26,7 @@ class NoteProvider extends BaseProvider {
     note.pinned = !note.pinned;
     note.modificationDate = DateTime.now();
     _updateNote(note);
+    notifyListeners();
   }
 
   void deleteNote(Note note) {
@@ -42,27 +43,23 @@ class NoteProvider extends BaseProvider {
     try {
       await noteRepository.insertNote(note);
     } catch (exception) {
-      print(exception);
+      throw Exception('Could not create the note "${note.id}"');
     }
   }
 
   void _updateNote(Note note) async {
     try {
       await noteRepository.updateNote(note);
-      setState(ProviderState.Success);
     } catch (exception) {
-      print(exception);
-      setState(ProviderState.Failure);
+      throw Exception('Could not update the note ${note.id}');
     }
   }
 
   void _deleteNote(int id) async {
     try {
       await noteRepository.deleteNote(id);
-      setState(ProviderState.Success);
     } catch (exception) {
-      print(exception);
-      setState(ProviderState.Failure);
+      throw Exception('Could not delete the note $id');
     }
   }
 }

@@ -2,12 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 
 import '../app_router.dart';
+import '../model/note.dart';
 import '../res/app_strings.dart';
 import 'note_page.dart';
 import 'note_list_item.dart';
 import 'provider/note_provider.dart';
 import 'shared/failure_widget.dart';
-import 'shared/state_aware_widget.dart';
 
 class NoteListPage extends StatefulWidget {
   @override
@@ -15,19 +15,17 @@ class NoteListPage extends StatefulWidget {
 }
 
 class _NoteListPageState extends State<NoteListPage> {
-  late NoteProvider _noteProvider;
+  late Future<List<Note>> _futureNotes;
 
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance?.addPostFrameCallback((_) {
-      context.read<NoteProvider>().fetchNotes();
-    });
+    _futureNotes = context.read<NoteProvider>().fetchNotes();
   }
 
   @override
   Widget build(BuildContext context) {
-    _noteProvider = context.watch<NoteProvider>();
+    context.watch<NoteProvider>();
 
     return Scaffold(
       appBar: AppBar(
@@ -40,11 +38,7 @@ class _NoteListPageState extends State<NoteListPage> {
         ],
       ),
       drawer: Drawer(),
-      body: StateAwareWidget(
-        state: _noteProvider.state,
-        successWidget: _listView,
-        failureWidget: _failureWidget,
-      ),
+      body: _body(),
       floatingActionButton: FloatingActionButton(
         child: Icon(Icons.article_outlined),
         onPressed: () => Navigator.pushNamed(
@@ -56,15 +50,27 @@ class _NoteListPageState extends State<NoteListPage> {
     );
   }
 
-  Widget _listView() {
-    return ListView.builder(
-      itemCount: _noteProvider.notes.length,
-      itemBuilder: (context, int index) => NoteListItem(
-        key: ObjectKey(index),
-        id: _noteProvider.notes[index].id,
-      ),
+  Widget _body() {
+    return FutureBuilder<List<Note>>(
+      future: _futureNotes,
+      builder: (context, snapshot) {
+        if (snapshot.hasData) {
+          return _listView(snapshot.data!);
+        } else if (snapshot.hasError) {
+          return FailureWidget(failureReason: 'Oops!');
+        }
+        return CircularProgressIndicator();
+      },
     );
   }
 
-  Widget _failureWidget() => FailureWidget(failureReason: 'Oops!');
+  Widget _listView(List<Note> notes) {
+    return ListView.builder(
+      itemCount: notes.length,
+      itemBuilder: (context, int index) => NoteListItem(
+        key: ObjectKey(index),
+        note: notes[index],
+      ),
+    );
+  }
 }
